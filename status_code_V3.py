@@ -105,7 +105,7 @@ try:
     for url in tqdm(all_url):  # Progress Bar
         response = requests.get(url)
         all_status_code.append(response.status_code)
-        time.sleep(0.1)  # Adjusted sleep interval
+        time.sleep(1)  # Adjusted sleep interval
 except Exception as e:
     print(Fore.RED + f"Error in retrieving status codes: {e}")
 
