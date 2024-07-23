@@ -1,13 +1,7 @@
-time
-datetime
 requests
 pandas
 colorama
 tqdm
-collections
-os
-base64
-email
 google-auth
 google-auth-oauthlib
 google-auth-httplib2

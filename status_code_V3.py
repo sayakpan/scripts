@@ -146,7 +146,7 @@ def send_email(creds, recipient_email, subject, body, attachment_path):
     service.users().messages().send(userId="me", body=raw).execute()
     print('Email sent successfully!')
 
-email_subject = "API URL Status Code Summary"
-email_body = f"Hello,\n\nHere is the summary of the status codes:\n\n{summary}\n\nThe detailed report is attached.\n\nBest regards,\nYour Name"
+email_subject = "Task Finished - Ezyschooling URL Status Code Summary"
+email_body = f"Hello,\n\nFinished checking {total_count} urls. Here is the summary of the status of urls of Ezyschooling-Main:\n\n{summary}\n\nThe detailed report is attached.\n\nThanks,\nSayak Pan"
 
 send_email(creds, recipient_email, email_subject, email_body, csv_filename)
