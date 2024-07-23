@@ -51,8 +51,8 @@ base_url = "https://api.main.ezyschooling.com/api/v1/schools/document/"
 params = {
     "limit": limit,
     "offset": 0,
-    "is_active": "false",
-    "is_verified": "false"
+    "is_active": "true",
+    "is_verified": "true"
 }
 if collab:
     params["collab"] = "true"
