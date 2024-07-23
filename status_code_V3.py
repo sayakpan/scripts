@@ -41,6 +41,11 @@ def authenticate_gmail():
 
 creds = authenticate_gmail()
 
+if (creds):
+    print(Fore.GREEN + "\nAuthorization Successfull\n")
+else:
+    print(Fore.RED + "\nAuthorization Failed\n")
+
 # API endpoint
 base_url = "https://api.main.ezyschooling.com/api/v1/schools/document/"
 params = {
@@ -147,6 +152,6 @@ def send_email(creds, recipient_email, subject, body, attachment_path):
     print('Email sent successfully!')
 
 email_subject = "Task Finished - Ezyschooling URL Status Code Summary"
-email_body = f"Hello,\n\nFinished checking {total_count} urls. Here is the summary of the status of urls of Ezyschooling-Main:\n\n{summary}\n\nThe detailed report is attached.\n\nThanks,\nSayak Pan"
+email_body = f"Hello,\n\nThe URL status check for Ezyschooling-Main has been completed. Checks performed on a total of {total_count} URLs.\n Here is the summary of the status of urls of Ezyschooling-Main:\n\n{summary}\n\nAttached to this email, you will find the detailed report, which includes the comprehensive status breakdown for each URL tested.\n\nThanks,\nSayak Pan"
 
 send_email(creds, recipient_email, email_subject, email_body, csv_filename)
