@@ -42,7 +42,7 @@ def authenticate_gmail():
 creds = authenticate_gmail()
 
 if (creds):
-    print(Fore.GREEN + "\nAuthorization Successfull\n")
+    print(Fore.GREEN + "\nAuthorization Successful\n")
 else:
     print(Fore.RED + "\nAuthorization Failed\n")
 
@@ -61,9 +61,8 @@ if collab:
 all_status_code = []
 all_url = []
 
-print(Fore.YELLOW + "Fetching total count from API...")
-
 # Fetch total count
+print(Fore.YELLOW + "Fetching total count from API...")
 response = requests.get(base_url, params=params)
 if response.status_code == 200:
     total_count = response.json()["count"]
@@ -94,26 +93,34 @@ for i in tqdm(range(iterations)):
     results = fetch_data(offset)
     if not results:
         break
-    
     all_url.extend([f"https://ezyschooling.com/school/{result['slug']}" for result in results])
+
 
 print(Fore.GREEN + "\nURL Loading complete!")
 print(Fore.YELLOW + "\nChecking URLs...")
 
+
 # Check status codes for all URLs
 try:
-    for url in tqdm(all_url):  # Progress Bar
-        response = requests.get(url)
-        all_status_code.append(response.status_code)
-        time.sleep(1)  # Adjusted sleep interval
+    for url in tqdm(all_url):
+        try:
+            response = requests.get(url, allow_redirects=True, timeout=10)
+            all_status_code.append(response.status_code)
+        except requests.TooManyRedirects:
+            all_status_code.append('TooManyRedirects')
+        except requests.RequestException as e:
+            all_status_code.append(f'Error: {str(e)}')
+        time.sleep(1) 
 except Exception as e:
     print(Fore.RED + f"Error in retrieving status codes: {e}")
+
 
 # Create DataFrame and save to CSV
 df = pd.DataFrame({"url": all_url, "status_code": all_status_code})
 current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 csv_filename = f"status_code_{current_datetime}.csv"
 df.to_csv(csv_filename, index=False)
+
 
 # Print status code counts
 status_counts = Counter(all_status_code)
@@ -123,10 +130,13 @@ for status, count in status_counts.items():
     summary += f"{status} - {count} URLs\n"
     print(f"{status} - {count} URLs")
 
+
 # Print "Process Complete" in green
 print(Fore.GREEN + f"\nExported as {csv_filename}")
 print(Fore.GREEN + "\n----- Process Complete -----")
 print(Style.RESET_ALL)  # Reset colorama styles
+
+
 
 def send_email(creds, recipient_email, subject, body, attachment_path):
     service = build('gmail', 'v1', credentials=creds)
@@ -152,6 +162,6 @@ def send_email(creds, recipient_email, subject, body, attachment_path):
     print('Email sent successfully!')
 
 email_subject = "Task Finished - Ezyschooling URL Status Code Summary"
-email_body = f"Hello,\n\nThe URL status check for Ezyschooling-Main has been completed. Checks performed on a total of {total_count} URLs.\n Here is the summary of the status of urls of Ezyschooling-Main:\n\n{summary}\n\nAttached to this email, you will find the detailed report, which includes the comprehensive status breakdown for each URL tested.\n\nThanks,\nSayak Pan"
+email_body = f"Hello,\n\nThe URL status check for ezyschooling-main has been completed. Here is the summary of the status of urls of Ezyschooling-Main:\n\nChecked URLs - {total_count}.\n{summary}\n\nAttached to this email, you will find the detailed report, which includes the comprehensive status breakdown for each URL tested.\n\nThanks,\nSayak Pan"
 
 send_email(creds, recipient_email, email_subject, email_body, csv_filename)
