@@ -20,6 +20,7 @@ from googleapiclient.discovery import build
 collab = False
 limit = 200
 recipient_email = "sayak@ezyschooling.com"
+recipient_email_2 = "mayank@ezyschooling.com"
 sender_email = "sayak.script@gmail.com"  # Replace with your email
 
 # Authenticate Gmail first
@@ -159,9 +160,10 @@ def send_email(creds, recipient_email, subject, body, attachment_path):
     raw = {'raw': raw_message}
 
     service.users().messages().send(userId="me", body=raw).execute()
-    print('Email sent successfully!')
+    print(f'Email sent successfully! - {recipient_email}')
 
 email_subject = "Task Finished - Ezyschooling URL Status Code Summary"
 email_body = f"Hello,\n\nThe URL status check for ezyschooling-main has been completed. Here is the summary of the status of urls of Ezyschooling-Main:\n\nChecked URLs - {total_count}.\n{summary}\n\nAttached to this email, you will find the detailed report, which includes the comprehensive status breakdown for each URL tested.\n\nThanks,\nSayak Pan"
 
 send_email(creds, recipient_email, email_subject, email_body, csv_filename)
+send_email(creds, recipient_email_2, email_subject, email_body, csv_filename)
