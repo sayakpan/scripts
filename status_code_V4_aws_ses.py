@@ -55,7 +55,7 @@ def send_email_ses(subject, body, recipient_email, attachment_path=None):
         print(f"An unexpected error occurred: {str(e)}")
 
 # Send starting email
-start_email_subject = "Started Executing Script 500"
+start_email_subject = "Routine Error Checking Script Running"
 start_email_body = "Routine error checking script is running now. You will receive a summary after the task finishes."
 send_email_ses(start_email_subject, start_email_body, recipient_email)
 send_email_ses(start_email_subject, start_email_body, recipient_email_2)
@@ -66,8 +66,8 @@ try:
     params = {
         "limit": limit,
         "offset": 0,
-        "is_active": "false",
-        "is_verified": "false"
+        "is_active": "true",
+        "is_verified": "true"
     }
     if collab:
         params["collab"] = "true"
