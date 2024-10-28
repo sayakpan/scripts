@@ -18,6 +18,7 @@ collab = False
 limit = 200
 recipient_email = "sayak@ezyschooling.com"
 recipient_email_2 = "mayank@ezyschooling.com"
+recipient_email_3 = "data@ezyschooling.com"
 SENDER_EMAIL = "sayak.script@gmail.com"  # Replace with your verified email
 
 # AWS SES Configuration
@@ -59,6 +60,7 @@ start_email_subject = "Routine Error Checking Script Running"
 start_email_body = "Routine error checking script is running now. You will receive a summary after the task finishes."
 send_email_ses(start_email_subject, start_email_body, recipient_email)
 send_email_ses(start_email_subject, start_email_body, recipient_email_2)
+send_email_ses(start_email_subject, start_email_body, recipient_email_3)
 
 try:
     # API endpoint
@@ -152,7 +154,7 @@ try:
         # Filter 404 and 500 URLs
     urls_404 = [url for url, code in zip(all_url, all_status_code) if code == 404]
     urls_500 = [url for url, code in zip(all_url, all_status_code) if code == 500]
-    
+
     email_body = (
         f"Hello,\n\n"
         f"The URL status check for ezyschooling-main has been completed. Here is the summary:\n\n"
@@ -173,6 +175,7 @@ try:
     )
     send_email_ses(email_subject, email_body, recipient_email, csv_filename)
     send_email_ses(email_subject, email_body, recipient_email_2, csv_filename)
+    send_email_ses(email_subject, email_body, recipient_email_3, csv_filename)
 
 except Exception as e:
     # Send error email with AWS SES
@@ -180,3 +183,4 @@ except Exception as e:
     error_body = f"Hello,\n\nAn error occurred during the execution of the script. Details are as follows:\n\n{str(e)}\n\nPlease check the script logs for more information.\n\nThanks,\nSayak Pan"
     send_email_ses(error_subject, error_body, recipient_email)
     send_email_ses(error_subject, error_body, recipient_email_2)
+    send_email_ses(error_subject, error_body, recipient_email_3)
