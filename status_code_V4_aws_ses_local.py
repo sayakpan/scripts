@@ -142,6 +142,11 @@ try:
         summary += f"{status} - {count} URLs\n"
         print(f"{status} - {count} URLs")
 
+    # Filter 404 and 500 URLs
+    urls_404 = [url for url, code in zip(all_url, all_status_code) if code == 404]
+    urls_500 = [url for url, code in zip(all_url, all_status_code) if code == 500]
+
+
     # Print "Process Complete" in green
     print(Fore.GREEN + f"\nExported as {csv_filename}")
     print(Fore.GREEN + "\n----- Process Complete -----")
@@ -149,7 +154,25 @@ try:
 
     # Send completion email with AWS SES
     email_subject = "Task Finished - Ezyschooling URL Status Code Summary"
-    email_body = f"Hello,\n\nThe URL status check for ezyschooling-main has been completed. Here is the summary of the status of urls of Ezyschooling-Main:\n\nChecked URLs - {total_count}.\n{summary}\n\nAttached to this email, you will find the detailed report, which includes the comprehensive status breakdown for each URL tested.\n\nThanks,\nSayak Pan"
+
+    email_body = (
+        f"Hello,\n\n"
+        f"The URL status check for ezyschooling-main has been completed. Here is the summary:\n\n"
+        f"Checked URLs - {total_count}.\n{summary}\n\n"
+    )
+
+    # Add URLs with 404 errors if there are any
+    if urls_404:
+        email_body += "URLs with 404 errors:\n" + "\n".join(urls_404) + "\n\n"
+
+    # Add URLs with 500 errors if there are any
+    if urls_500:
+        email_body += "URLs with 500 errors:\n" + "\n".join(urls_500) + "\n\n"
+
+    email_body += (
+        f"Attached to this email, you will find the detailed report, which includes the comprehensive status breakdown for each URL tested.\n\n"
+        f"Thanks,\nSayak Pan"
+    )
 
     send_email_ses(email_subject, email_body, recipient_email, csv_filename)
     # send_email_ses(email_subject, email_body, recipient_email_2, csv_filename)
